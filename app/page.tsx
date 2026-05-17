@@ -28,11 +28,13 @@ export default function ProposalPage() {
 
   const musicRef = useRef<HTMLAudioElement | null>(null)
 
-if (!musicRef.current) {
-  musicRef.current = new Audio("/love.mp3")
-  musicRef.current.loop = true
-  musicRef.current.volume = 0.5
-}
+useEffect(() => {
+  const audio = new Audio("/love.mp3")
+  audio.loop = true
+  audio.volume = 0.5
+
+  musicRef.current = audio
+}, [])
   // Add floating heart on click
   const handleClick = useCallback((e: MouseEvent) => {
     const newHeart = {
