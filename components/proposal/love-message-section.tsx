@@ -1,12 +1,25 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useRef, useState,useEffect  } from "react"
 import { motion, useInView, AnimatePresence } from "framer-motion"
 
 export function LoveMessageSection() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
   const [opened, setOpened] = useState(false)
+  useEffect(() => {
+  if (!opened) return
+
+  const handleScroll = () => {
+    setOpened(false)
+  }
+
+  window.addEventListener("scroll", handleScroll)
+
+  return () => {
+    window.removeEventListener("scroll", handleScroll)
+  }
+}, [opened])
 
 const blogPosts = [
   {
@@ -90,91 +103,101 @@ const blogPosts = [
         </motion.div>
 
         {/* 💌 LETTER POPUP */}
-        <AnimatePresence>
-          {opened && (
-            <motion.div
-              initial={{ scale: 0, y: 50, opacity: 0 }}
-              animate={{ scale: 1, y: 0, opacity: 1 }}
-              exit={{ scale: 0 }}
-              className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm px-4"
-              onClick={() => setOpened(false)}
-            >
+       <AnimatePresence>
+      {opened && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-md px-4 touch-none"
+          onClick={() => setOpened(false)}
+          onWheel={(e) => e.stopPropagation()}
+          onTouchMove={(e) => e.stopPropagation()}
+        >
 
+          {/* MODAL */}
+          <motion.div
+            initial={{ scale: 0.8, y: 40 }}
+            animate={{ scale: 1, y: 0 }}
+            exit={{ scale: 0.8, y: 40, opacity: 0 }}
+            transition={{ type: "spring", stiffness: 120 }}
+            className="relative max-w-xl w-full bg-white rounded-3xl p-8 shadow-2xl max-h-[85vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+
+            {/* 🌸 FLOWERS */}
+            {[...Array(10)].map((_, i) => (
               <motion.div
-                initial={{ scale: 0.8 }}
-                animate={{ scale: 1 }}
-                className="relative max-w-xl w-full bg-white rounded-3xl p-8 shadow-2xl overflow-hidden"
-                onClick={(e) => e.stopPropagation()}
+                key={i}
+                className="absolute text-pink-300 text-xl pointer-events-none"
+                initial={{ scale: 0, y: 0 }}
+                animate={{ scale: [0, 1.5, 0], y: [0, -100] }}
+                transition={{
+                  duration: 2.5,
+                  repeat: Infinity,
+                  delay: i * 0.2,
+                }}
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: "80%",
+                }}
               >
-
-                {/* 🌸 flower animation */}
-                {[...Array(10)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    className="absolute text-pink-300 text-xl"
-                    initial={{ scale: 0 }}
-                    animate={{ scale: [0, 1.5, 0], y: [0, -80] }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      delay: i * 0.2,
-                    }}
-                    style={{
-                      left: `${Math.random() * 100}%`,
-                      top: "80%",
-                    }}
-                  >
-                    🌸
-                  </motion.div>
-                ))}
-
-                <h2 className="text-2xl font-serif text-center text-pink-500 mb-6">
-                  My Love Letter 💌
-                </h2>
-
-                <div className="space-y-6 text-left">
-                  {blogPosts.map((post, i) => (
-                    <div key={i}>
-                      <div className="flex items-center gap-2 mb-1">
-                        <span>{post.emoji}</span>
-                        <h3 className="font-semibold text-gray-800">
-                          {post.title}
-                        </h3>
-                      </div>
-                      <p className="text-gray-600 text-sm leading-relaxed">
-                        {post.content}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-
-                {/* optional photo area */}
-                <div className="mt-6 rounded-xl overflow-hidden shadow-md">
-                  <img
-                    src="/image1/image1.jpg"
-                    className="w-full h-48 object-cover"
-                    alt="love"
-                  />
-                </div>
-
-                <p className="text-center mt-4 text-pink-400 text-sm">
-                  Forever yours 💚💗
-                </p>
-                <button>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setOpened(false)}
-                    className="mt-6 px-6 py-3 bg-pink-500 text-white rounded-full shadow-lg"
-                  >
-                    Close
-                  </motion.button>
-                </button>
-
+                🌸
               </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+            ))}
+
+            {/* TITLE */}
+            <h2 className="text-2xl font-serif text-center text-pink-500 mb-6">
+              My Love Letter 💌
+            </h2>
+
+            {/* CONTENT */}
+            <div className="space-y-6 text-left">
+              {blogPosts.map((post, i) => (
+                <div key={i}>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span>{post.emoji}</span>
+                    <h3 className="font-semibold text-gray-800">
+                      {post.title}
+                    </h3>
+                  </div>
+                  <p className="text-gray-600 text-sm leading-relaxed">
+                    {post.content}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {/* IMAGE */}
+            <div className="mt-6 rounded-xl overflow-hidden shadow-md">
+              <img
+                src="/image1/image1.jpg"
+                className="w-full h-48 object-cover"
+                alt="love"
+              />
+            </div>
+
+            {/* FOOTER */}
+            <p className="text-center mt-4 text-pink-400 text-sm">
+              Forever yours 💚💗
+            </p>
+
+            {/* BUTTON */}
+            <div className="flex justify-center">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setOpened(false)}
+                className="mt-6 px-6 py-3 bg-pink-500 text-white rounded-full shadow-lg"
+              >
+                Close
+              </motion.button>
+            </div>
+
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
 
       </div>
     </section>

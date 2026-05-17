@@ -34,6 +34,8 @@ useEffect(() => {
   audio.volume = 0.5
 
   musicRef.current = audio
+
+ 
 }, [])
   // Add floating heart on click
   const handleClick = useCallback((e: MouseEvent) => {
