@@ -160,6 +160,16 @@ const blogPosts = [
                 <p className="text-center mt-4 text-pink-400 text-sm">
                   Forever yours 💚💗
                 </p>
+                <button>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setOpened(false)}
+                    className="mt-6 px-6 py-3 bg-pink-500 text-white rounded-full shadow-lg"
+                  >
+                    Close
+                  </motion.button>
+                </button>
 
               </motion.div>
             </motion.div>

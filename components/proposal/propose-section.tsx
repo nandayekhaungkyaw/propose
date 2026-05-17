@@ -30,6 +30,11 @@ export function ProposeSection() {
 
   const handleYesClick = () => {
     setShowCatPopup(true)
+      setNoClickCount(0)
+  setYesScale(1)
+  setNoScale(1)
+  setNoPosition({ x: 0, y: 0 })
+  
   }
 
   return (

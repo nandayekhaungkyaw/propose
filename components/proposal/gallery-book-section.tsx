@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-
 import Image from "next/image"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
@@ -48,45 +47,55 @@ export function GalleryBookSection() {
     <section id="memory-book" className="py-16 flex justify-center bg-primary-400">
       <div className="w-full max-w-5xl">
 
-        {/* 📖 BOOK */}
-        <div
-          className="flex justify-center"
-          style={{ perspective: "2000px" }}
-        >
+        {/* BOOK */}
+        <div className="flex justify-center" style={{ perspective: "2000px" }}>
           <div className="flex w-full max-w-4xl">
 
             {/* LEFT PAGE */}
-            <div className="w-1/2 aspect-[3/4] bg-white rounded-l-lg overflow-hidden shadow-inner relative">
-              {left && (
-                <>
-                  <Image src={left.src} alt="" fill className="object-cover" />
-                  <p className="absolute bottom-0 w-full text-center text-xs sm:text-sm bg-black/40 text-white py-1">
-                    {left.caption}
-                  </p>
-                </>
-              )}
-            </div>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={page + "-left"}
+                initial={{
+                  rotateY: direction === -1 ? -90 : 0,
+                  opacity: direction === -1 ? 0 : 1
+                }}
+                animate={{ rotateY: 0, opacity: 1 }}
+                exit={{
+                  rotateY: direction === -1 ? 90 : 0,
+                  opacity: direction === -1 ? 0 : 1
+                }}
+                transition={{ duration: 0.6 }}
+                className="w-1/2 aspect-[3/4] bg-white rounded-l-lg overflow-hidden shadow-inner relative"
+                style={{ transformStyle: "preserve-3d" }}
+              >
+                {left && (
+                  <>
+                    <Image src={left.src} alt="" fill className="object-cover" />
+                    <p className="absolute bottom-0 w-full text-center text-xs sm:text-sm bg-black/40 text-white py-1">
+                      {left.caption}
+                    </p>
+                  </>
+                )}
+              </motion.div>
+            </AnimatePresence>
 
-            {/* RIGHT PAGE (DRAG ENABLED) */}
+            {/* RIGHT PAGE */}
             <div className="w-1/2 aspect-[3/4] relative">
 
               <AnimatePresence mode="wait">
                 <motion.div
-                  key={page}
+                  key={page + "-right"}
                   drag="x"
                   dragConstraints={{ left: 0, right: 0 }}
                   onDragEnd={(e, info) => {
-                    if (info.offset.x < -100) next()
-                    if (info.offset.x > 100) prev()
+                    if (info.offset.x < -50) next()
+                    if (info.offset.x > 50) prev()
                   }}
                   initial={{
                     rotateY: direction === 1 ? 90 : -90,
                     opacity: 0
                   }}
-                  animate={{
-                    rotateY: 0,
-                    opacity: 1
-                  }}
+                  animate={{ rotateY: 0, opacity: 1 }}
                   exit={{
                     rotateY: direction === 1 ? -90 : 90,
                     opacity: 0
@@ -118,23 +127,31 @@ export function GalleryBookSection() {
               <motion.div
                 key={page}
                 initial={{ opacity: 0 }}
-                animate={{ opacity: 0.3 }}
+                animate={{ opacity: 0.25 }}
                 exit={{ opacity: 0 }}
                 className="absolute inset-0 bg-gradient-to-l from-black/30 to-transparent pointer-events-none"
               />
 
             </div>
-
           </div>
         </div>
 
         {/* BUTTONS */}
         <div className="flex justify-between mt-6">
-          <button onClick={prev} className="p-2 bg-white rounded-full shadow">
-            <ChevronLeft  className=" text-primary" />
+          <button
+            onClick={prev}
+            disabled={page === 0}
+            className="p-2 bg-white rounded-full shadow disabled:opacity-40"
+          >
+            <ChevronLeft className="text-primary" />
           </button>
-          <button onClick={next} className="p-2 bg-white rounded-full shadow">
-            <ChevronRight className=" text-primary font-bold" />
+
+          <button
+            onClick={next}
+            disabled={page === total - 1}
+            className="p-2 bg-white rounded-full shadow disabled:opacity-40"
+          >
+            <ChevronRight className="text-primary" />
           </button>
         </div>
 

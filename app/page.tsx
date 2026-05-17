@@ -104,9 +104,10 @@ useEffect(() => {
 
             {/* Sections - IDs are inside each component */}
             <HeroSection />
+            <CountdownTimer startDate={relationshipStartDate} />
             <LoveMessageSection />
             <GalleryBookSection />
-            <CountdownTimer startDate={relationshipStartDate} />
+            
             <HeartPhotoSection />
             <ProposeSection />
 
